@@ -1,26 +1,28 @@
 #!/usr/bin/env groovy
 
-pipeline {
-
-    agent {
-        docker {
-            image 'node'
-            args '-u root'
-        }
+    agent any
+    environment {
+        COMPOSE_PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}"
     }
-
     stages {
-        stage('Build') {
+         stage('Build') {
             steps {
-                echo 'Building...'
+                echo 'Building with EH edit...'
                 sh 'npm install'
+                   }
             }
-        }
-        stage('Test') {
+        
+          stage('Test') {
             steps {
-                echo 'Testing...'
+                echo 'Testing  with EH edit ...'
                 sh 'npm test'
+                }
             }
+    }
+     
+    post {
+        always {
+            sh "docker-compose down -v"
         }
     }
 }
